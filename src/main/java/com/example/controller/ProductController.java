@@ -20,24 +20,20 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/product/id/{id}")
     public ResponseEntity<Product> findById(@PathVariable ("id") long id) {
         Optional<Product> productData = productRepository.findById(id);
-        if (productData.isPresent()) {
-            return new ResponseEntity<>(productData.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return productData.map(product -> new ResponseEntity<>(product, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/product/{category}")
-    public ResponseEntity<List<Product>> findByCategory(@RequestParam(required = false) String category) {
+    @GetMapping("/product/category/{category}")
+    public ResponseEntity<List<Product>> findByCategory(@PathVariable ("category") String category) {
         try {
-            List<Product> productList = new ArrayList<Product>();
+            List<Product> productList = new ArrayList<>();
             if (category == null) {
-                productRepository.findAll().forEach(productList::add);
-            } else if (category != null && !category.equals("")) {
-                productRepository.findByCategory(category).forEach(productList::add);
+                productList.addAll(productRepository.findAll());
+            } else if (!category.isEmpty()) {
+                productList.addAll(productRepository.findByCategory(category));
             }
             return new ResponseEntity<>(productList, HttpStatus.OK);
         } catch (Exception e) {
@@ -45,13 +41,9 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/{name}")
+    @GetMapping("/product/name/{name}")
     public ResponseEntity<Product> findByName(@PathVariable ("name") String name) {
         Optional<Product> productData = productRepository.findByName(name);
-        if (productData.isPresent()) {
-            return new ResponseEntity<>(productData.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return productData.map(product -> new ResponseEntity<>(product, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
