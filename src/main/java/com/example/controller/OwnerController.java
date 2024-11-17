@@ -5,18 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public class CustomerController {
+public class OwnerController {
     @PostMapping("/registrations")
-    public ResponseEntity<Registration> viewCart(@RequestBody Registration reg ) {
+    public ResponseEntity<Registration> findAllOrders(@RequestBody Registration reg ) {
         return null;
     }
 
     @PostMapping("/registrations")
-    public ResponseEntity<Registration> addToCart(@RequestBody Registration reg ) {
-        return null;
-    }
-    @PostMapping("/registrations")
-    public ResponseEntity<Registration> chectOut(@RequestBody Registration reg ) {
+    public ResponseEntity<Registration> findAmount(@RequestBody Registration reg ) {
         return null;
     }
 }

@@ -1,4 +1,5 @@
 package com.example.model;
 
-public class Products {
+public class Orders {
+
 }
