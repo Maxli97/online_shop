@@ -21,7 +21,7 @@ import java.util.Optional;
 public class OwnerController {
     @Autowired
     OrdersRepository orderRepo;
-    //------------------------findAllOrders-------------------------
+    //------------------------allow the owner company check customers order -------------------------
     @GetMapping("/orders")
     public ResponseEntity<List<Orders>>findAllOrders(@RequestParam(required = false) String productIds) {
         try{
@@ -41,6 +41,7 @@ public class OwnerController {
         }
     }
 
+    //------------------------if the company need to update a missing order-------------------------
 //    @PostMapping("/orders")
 //    public ResponseEntity<Orders> addOrder(@RequestBody Orders order) {
 //        try{
@@ -52,6 +53,7 @@ public class OwnerController {
 //        }
 //    }
 //
+    //------------------------if an order is conflict by multiple user-------------------------
 //    @DeleteMapping("/orders/{id}")
 //    public ResponseEntity<Orders> deleteOrder(@PathVariable long id) {
 //        try{
@@ -62,7 +64,7 @@ public class OwnerController {
 //        }
 //    }
 
-    //------------------------findAllProduct-------------------------
+    //------------------------allow the owner company check their product inventory -------------------------
     @Autowired
     ProductRepository productRepo;
     @GetMapping("/products")
@@ -78,6 +80,7 @@ public class OwnerController {
             if (products.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+
             return new ResponseEntity<>(products, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
