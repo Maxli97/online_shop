@@ -2,7 +2,8 @@ package com.example.controller;
 
 import com.example.model.Orders;
 import com.example.model.OrdersRepository;
-import com.example.model.Products;
+import com.example.model.Product;
+import com.example.model.ProductRepository;
 import jakarta.servlet.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,14 +63,16 @@ public class OwnerController {
 //    }
 
     //------------------------findAllProduct-------------------------
+    @Autowired
+    ProductRepository productRepo;
     @GetMapping("/products")
-    public ResponseEntity<List<Products>>findAllProducts(@RequestParam(required = false) String productIds) {
+    public ResponseEntity<List<Product>>findAllProducts(@RequestParam(required = false) Long productIds) {
         try{
-            List<Products> products = new ArrayList<Products>();
+            List<Product> products = new ArrayList<Product>();
             if (productIds != null) {
-                orderRepo.findAll().forEach(products::add);
+                productRepo.findAll().forEach(products::add);
             }else {
-                orderRepo.findbyProductIds(productIds).forEach(products::add);
+                productRepo.findById(productIds).ifPresent(products::add);
             }
 
             if (products.isEmpty()) {
