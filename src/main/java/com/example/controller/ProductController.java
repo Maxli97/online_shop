@@ -5,18 +5,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public class CustomerController {
+public class ProductController {
     @PostMapping("/registrations")
-    public ResponseEntity<Registration> viewCart(@RequestBody Registration reg ) {
+    public ResponseEntity<Registration> FindByCategory(@RequestBody Registration reg ) {
         return null;
     }
 
     @PostMapping("/registrations")
-    public ResponseEntity<Registration> addToCart(@RequestBody Registration reg ) {
+    public ResponseEntity<Registration> findById(@RequestBody Registration reg ) {
         return null;
     }
     @PostMapping("/registrations")
-    public ResponseEntity<Registration> chectOut(@RequestBody Registration reg ) {
+    public ResponseEntity<Registration> findByName(@RequestBody Registration reg ) {
         return null;
     }
 }
