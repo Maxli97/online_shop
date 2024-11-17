@@ -66,4 +66,19 @@ public class Orders {
         this.time = time;
         this.state = state;
     }
+
+    public Orders(String productIds, String time, double totalCost, String state) {
+        this.productIds = productIds;
+        this.time = time;
+        this.totalCost = totalCost;
+        this.state = state;
+    }
+
+    public Orders(long id, String productIds, String time, double totalCost, String state) {
+        this.id = id;
+        this.productIds = productIds;
+        this.time = time;
+        this.totalCost = totalCost;
+        this.state = state;
+    }
 }
