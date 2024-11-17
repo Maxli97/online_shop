@@ -1,10 +1,9 @@
-package com.example.controller;
+package com.example.online_shop.controller;
 
-import com.example.model.Orders;
-import com.example.model.OrdersRepository;
-import com.example.model.Product;
-import com.example.model.ProductRepository;
-import jakarta.servlet.Registration;
+import com.example.online_shop.model.Orders;
+import com.example.online_shop.model.OrdersRepository;
+import com.example.online_shop.model.Product;
+import com.example.online_shop.model.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -23,14 +21,10 @@ public class OwnerController {
     OrdersRepository orderRepo;
     //------------------------allow the owner company check customers order -------------------------
     @GetMapping("/orders")
-    public ResponseEntity<List<Orders>>findAllOrders(@RequestParam(required = false) String productIds) {
+    public ResponseEntity<List<Orders>>findAllOrders() {
         try{
             List<Orders> orders = new ArrayList<Orders>();
-            if (productIds != null) {
                 orderRepo.findAll().forEach(orders::add);
-            }else {
-                orderRepo.findbyProductIds(productIds).forEach(orders::add);
-            }
 
             if (orders.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
