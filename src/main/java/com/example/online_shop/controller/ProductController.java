@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin (origins = "http://localhost:8080")
+@CrossOrigin (origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -31,7 +31,7 @@ public class ProductController {
     public ResponseEntity<List<Product>> findByCategory(@PathVariable ("category") String category) {
         try {
             List<Product> productList = new ArrayList<>();
-            if (category == null) {
+            if (category .equals("all")) {
                 productList.addAll(productRepository.findAll());
             } else if (!category.isEmpty()) {
                 productList.addAll(productRepository.findByCategory(category));
@@ -41,11 +41,26 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    //find product by name (String)
-    @GetMapping("/product/name/{name}")
-    public ResponseEntity<Product> findByName(@PathVariable ("name") String name) {
-        Optional<Product> productData = productRepository.findByName(name);
-        return productData.map(product -> new ResponseEntity<>(product, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @PostMapping("/product/category")
+    public ResponseEntity<List<Product>> getAllproduct() {
+        try {
+            List<Product> templist = productRepository.findAll();
+            return new ResponseEntity<List<Product>>(templist,HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+    @GetMapping("/product/name/{name}")
+    public ResponseEntity<List<Product>> findByName(@PathVariable ("name") String name){
+        Optional<List<Product>> listOptional = productRepository.findByName(name);
+        List<Product> listProducts = listOptional.get();
+        return new ResponseEntity<List<Product>>(listProducts,HttpStatus.OK);
+
+    }
+//    //find product by name (String)
+//    @GetMapping("/product/name/{name}")
+//    public ResponseEntity<Product> findByName(@PathVariable ("name") String name) {
+//        Optional<Product> productData = productRepository.findByName(name);
+//        return productData.map(product -> new ResponseEntity<>(product, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 }

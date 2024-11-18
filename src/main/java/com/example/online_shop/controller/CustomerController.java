@@ -1,6 +1,7 @@
 package com.example.online_shop.controller;
 
 import com.example.online_shop.model.*;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
 public class CustomerController {
@@ -27,11 +29,33 @@ public class CustomerController {
     public ResponseEntity<String> viewCart(@PathVariable("id") int id) {
         List<Customers> customers=customersRepository.findById(id);
         String cart=customers.get(0).getCart();
-        if(cart.isEmpty()){
-            return new ResponseEntity<>("No items in the cart.",HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(cart,HttpStatus.OK);
+        String[] products=cart.split(",,");
+        try {
+
+            if(cart.isEmpty()){
+                System.out.println(111);
+                return new ResponseEntity<>("No items in the cart.",HttpStatus.OK);
+            }else {
+                String jsonString="[";
+                for(int i=0;i<products.length;i++){
+                    JSONParser jsonParser=new JSONParser(products[i]);
+                    LinkedHashMap<String, Object> object= jsonParser.parseObject();
+                    Optional<Product> product=productsRepository.findById(Long.parseLong(object.get("id").toString()));
+                    jsonString+="{\"name\":\""+product.get().getName()+"\",\"price\":\""+product.get().getPrice()+"\",\"amount\":\""+object.get("amount")+"\"}";
+                    if (i<products.length-1){
+                        jsonString+=",";
+                    }else {
+                        jsonString+="]";
+                    }
+                }
+                System.out.println(jsonString);
+                return new ResponseEntity<>(jsonString,HttpStatus.OK);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
 
     }
 
@@ -41,9 +65,9 @@ public class CustomerController {
         String cart=customers.get(0).getCart();
         Optional<Product> products=productsRepository.findById(pid);
         if (cart.isEmpty()){
-            cart="{pid:'"+pid+"',amount:'"+amount+"'}";
+            cart="{\"id\":\""+pid+"\",\"amount\":\""+amount+"\"}";
         }else{
-            cart=cart+",,{pid:'"+pid+"',amount:'"+amount+"'}";
+            cart=cart+",,{\"id\":\""+pid+"\",\"amount\":\""+amount+"\"}";
         }
         Customers customer=customers.get(0);
         customer.setCart(cart);
@@ -78,20 +102,18 @@ public class CustomerController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
-    //test for json transfer
-    public static void main(String[] args) throws ParseException {
-        String a="{id:'aaa',amount:'123'},,{id:'bbb',amount:'222'},,{id:'ccc',amount:'321'}";
-        String[] products=a.split(",,");
-        for (String p:products) {
-            JSONParser jsonParser=new JSONParser(p);
-            LinkedHashMap<String, Object> object= jsonParser.parseObject();
-//            System.out.println(jsonParser.parseObject().get("id"));
-            System.out.println(object.get("id"));
-            System.out.println(object.get("amount"));
-        }
-    }
+//    //test for json transfer
+//    public static void main(String[] args) throws ParseException {
+//        String a="{id:'aaa',amount:'123'},,{id:'bbb',amount:'222'},,{id:'ccc',amount:'321'}";
+//        String[] products=a.split(",,");
+//        for (String p:products) {
+//            JSONParser jsonParser=new JSONParser(p);
+//            LinkedHashMap<String, Object> object= jsonParser.parseObject();
+////            System.out.println(jsonParser.parseObject().get("id"));
+//            System.out.println(object.get("id"));
+//            System.out.println(object.get("amount"));
+//        }
+//    }
 }
