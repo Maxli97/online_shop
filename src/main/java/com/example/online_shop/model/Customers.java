@@ -43,6 +43,11 @@ public class Customers {
     public Customers() {
     }
 
+    public Customers(String name, String cart) {
+        this.name = name;
+        this.cart = cart;
+    }
+
     public Customers(int id, String name, String cart) {
         this.id = id;
         this.name = name;

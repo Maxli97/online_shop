@@ -1,9 +1,6 @@
 package com.example;
 
-import com.example.online_shop.model.CustomersRepository;
-import com.example.online_shop.model.OrdersRepository;
-import com.example.online_shop.model.Product;
-import com.example.online_shop.model.ProductRepository;
+import com.example.online_shop.model.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +18,11 @@ public class OnlineShopApplication {
 	private void loadData(ProductRepository productRepository, CustomersRepository customersRepository, OrdersRepository ordersRepository) {
 		ArrayList<Product> products = new ArrayList<>();
 		products.add(new Product("RTZ 4900", "GPU","Graphics card",420.69,99));
+		products.add(new Product("RTX 4090", "GPU","Graphics card",1000,99));
 		productRepository.saveAll(products);
+		customersRepository.save(new Customers("aaa",""));
+		customersRepository.save(new Customers("bbb","{id:'1',amount:'2'}"));
+
 	}
 
 	@Bean

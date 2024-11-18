@@ -41,13 +41,13 @@ public class CustomerController {
         String cart=customers.get(0).getCart();
         Optional<Product> products=productsRepository.findById(pid);
         if (cart.isEmpty()){
-            cart="{pid:'"+pid+"',amount:'"+products.get().getPrice()+"'}";
+            cart="{pid:'"+pid+"',amount:'"+amount+"'}";
         }else{
-            cart=cart+",,{pid:'"+pid+"',amount:'"+products.get().getPrice()+"'}";
+            cart=cart+",,{pid:'"+pid+"',amount:'"+amount+"'}";
         }
         Customers customer=customers.get(0);
         customer.setCart(cart);
-        customersRepository.setCartById(cart,id);
+        customersRepository.save(customer);
         return new ResponseEntity<>(customer,HttpStatus.OK);
     }
 
@@ -56,18 +56,23 @@ public class CustomerController {
     public ResponseEntity<Double> chectOut(@PathVariable("id") int id) {
         List<Customers> customers=customersRepository.findById(id);
         String cart=customers.get(0).getCart();
+        if(cart.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         String[] products=cart.split(",,");
         double totalCost=0;
         try {
             for (String p:products) {
                 JSONParser jsonParser=new JSONParser(p);
                 LinkedHashMap<String, Object> object= jsonParser.parseObject();
-                System.out.println(object.get("id"));
-                System.out.println(object.get("amount"));
-                totalCost=totalCost+Double.parseDouble(object.get("amount").toString());
+                Optional<Product> product=productsRepository.findById(Long.parseLong(object.get("id").toString()));
+                totalCost=totalCost+Double.parseDouble(object.get("amount").toString())*product.get().getPrice();
             }
             SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             ordersRepository.save(new Orders(cart, format.format(new Date()),totalCost,"Payment in progress"));
+            Customers customer=customers.get(0);
+            customer.setCart("");
+            customersRepository.save(customer);
             return new ResponseEntity<>(totalCost,HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
@@ -77,6 +82,7 @@ public class CustomerController {
 
     }
 
+    //test for json transfer
     public static void main(String[] args) throws ParseException {
         String a="{id:'aaa',amount:'123'},,{id:'bbb',amount:'222'},,{id:'ccc',amount:'321'}";
         String[] products=a.split(",,");
