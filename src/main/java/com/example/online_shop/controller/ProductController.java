@@ -31,11 +31,8 @@ public class ProductController {
     public ResponseEntity<List<Product>> findByCategory(@PathVariable ("category") String category) {
         try {
             List<Product> productList = new ArrayList<>();
-            if (category == null) {
-                productList.addAll(productRepository.findAll());
-            } else if (!category.isEmpty()) {
-                productList.addAll(productRepository.findByCategory(category));
-            }
+            productList.addAll(productRepository.findAll());
+
             return new ResponseEntity<>(productList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

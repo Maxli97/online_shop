@@ -22,6 +22,7 @@ public class OnlineShopApplication {
 		productRepository.saveAll(products);
 		customersRepository.save(new Customers("aaa",""));
 		customersRepository.save(new Customers("bbb","{id:'1',amount:'2'}"));
+		ordersRepository.save(new Orders("{id:'2',amount:'1'}","1970-01-01 00:00:00",1000,"finish"));
 
 	}
 

@@ -41,9 +41,9 @@ public class CustomerController {
         String cart=customers.get(0).getCart();
         Optional<Product> products=productsRepository.findById(pid);
         if (cart.isEmpty()){
-            cart="{pid:'"+pid+"',amount:'"+amount+"'}";
+            cart="{id:'"+pid+"',amount:'"+amount+"'}";
         }else{
-            cart=cart+",,{pid:'"+pid+"',amount:'"+amount+"'}";
+            cart=cart+",,{id:'"+pid+"',amount:'"+amount+"'}";
         }
         Customers customer=customers.get(0);
         customer.setCart(cart);
